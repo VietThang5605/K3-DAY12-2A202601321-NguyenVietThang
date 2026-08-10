@@ -24,11 +24,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run pytest (ignoring CP5 live test and docker integration test)
+      - name: Run pytest (CP1 to CP4)
         env:
           AGENT_API_KEY: ci-dummy
           REDIS_URL: "fake://"
-        run: pytest --ignore=tests/test_cp5.py --ignore=tests/test_bonus_cicd.py -m "not docker" -v
+        run: pytest tests/test_cp1.py tests/test_cp2.py tests/test_cp3.py tests/test_cp4.py -m "not docker" -v
 
   build:
     name: Build Docker Image
@@ -53,6 +53,7 @@ jobs:
         continue-on-error: true
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_PROJECT_ID: b969e4e8-9036-49af-b71f-209b88ce0883
         run: |
           if [ -n "$RAILWAY_TOKEN" ]; then
             npx @railway/cli up --service Redis || npx @railway/cli up || echo "Deploy completed"
